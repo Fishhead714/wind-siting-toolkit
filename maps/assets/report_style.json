@@ -1,0 +1,567 @@
+{
+  "_comment": "Style catalogue for render_map.py. A layer's `style` may name one of these categories. Shape and pattern are the identity of a category; colours are references resolved from theme.json (`auto`, `auto:<family>`, `fixed:<key>`, `risk:<level>`, `transparent`) or literal hex values. Keys starting with `_` are documentation and are ignored. Optional fields: `exclusion_type` (hard / review / soft) groups restriction layers in the legend and in drawing order; `categorize_by` + `categories` and `rules` build categorized or rule-based renderers from a single table; `casing_color` / `casing_width_mm` draw a halo under a line; `legend_*` fields override only the legend swatch. Rasters are not styled here; they take min/max/colors in the layer config.",
+  "water_body": {
+    "kind": "fill",
+    "color": "fixed:water",
+    "opacity": 0.55,
+    "outline_color": "fixed:water",
+    "outline_width_mm": 0.3,
+    "pattern": "solid"
+  },
+  "reservoir": {
+    "kind": "fill",
+    "color": "fixed:water",
+    "opacity": 0.55,
+    "outline_color": "fixed:water",
+    "outline_width_mm": 0.3,
+    "pattern": "solid"
+  },
+  "river_line": {
+    "kind": "line",
+    "color": "fixed:water",
+    "width_mm": 0.5
+  },
+  "land_use": {
+    "kind": "fill",
+    "color": "auto",
+    "opacity": 0.4,
+    "outline_color": "auto",
+    "outline_width_mm": 0.3,
+    "pattern": "solid",
+    "_note": "Bare `auto` takes the next colour of the global qualitative counter in config order and does not know semantics: the same real-world entity split across several layer keys may get different colours. When colours must match across layers or maps, use a `fixed:` colour instead."
+  },
+  "contour": {
+    "kind": "line",
+    "color": "auto",
+    "width_mm": 0.2,
+    "_note": "Same caveat as land_use: bare `auto` is order-based, not semantic."
+  },
+  "restriction_forest": {
+    "kind": "fill",
+    "color": "fixed:protected_area",
+    "opacity": 0.85,
+    "outline_color": "fixed:protected_area",
+    "outline_width_mm": 0.6,
+    "pattern": "solid",
+    "exclusion_type": "hard",
+    "_note": "Protected forest treated as a hard exclusion by default: opaque solid fill so it reads differently from hatched soft buffers. Whether a given protected class is a legal exclusion must be confirmed for each jurisdiction; override with style_overrides: {exclusion_type: soft} where it is not. Related classes use protection_1..4 from the same green ramp so several protected classes on one map stay distinguishable."
+  },
+  "restriction_protected_1": {
+    "kind": "fill",
+    "color": "fixed:protection_1",
+    "opacity": 0.85,
+    "outline_color": "fixed:protection_1",
+    "outline_width_mm": 0.6,
+    "pattern": "solid",
+    "exclusion_type": "hard",
+    "_note": "First (strongest) protected-land class (fixed:protection_1). See restriction_forest."
+  },
+  "restriction_protected_2": {
+    "kind": "fill",
+    "color": "fixed:protection_2",
+    "opacity": 0.85,
+    "outline_color": "fixed:protection_2",
+    "outline_width_mm": 0.6,
+    "pattern": "solid",
+    "exclusion_type": "hard",
+    "_note": "Second protected-land class (fixed:protection_2). See restriction_forest."
+  },
+  "restriction_protected_3": {
+    "kind": "fill",
+    "color": "fixed:protection_3",
+    "opacity": 0.85,
+    "outline_color": "fixed:protection_3",
+    "outline_width_mm": 0.6,
+    "pattern": "solid",
+    "exclusion_type": "hard",
+    "_note": "Third protected-land class (fixed:protection_3). Whether a class is a hard exclusion depends on the applicable rules; override exclusion_type where appropriate."
+  },
+  "restriction_protected_4": {
+    "kind": "fill",
+    "color": "fixed:protection_4",
+    "opacity": 0.85,
+    "outline_color": "fixed:protection_4",
+    "outline_width_mm": 0.6,
+    "pattern": "solid",
+    "exclusion_type": "hard",
+    "_note": "Fourth protected-land class (fixed:protection_4). See restriction_forest."
+  },
+  "restriction_heritage": {
+    "kind": "fill",
+    "color": "fixed:heritage",
+    "opacity": 0.85,
+    "outline_color": "auto",
+    "outline_width_mm": 0.6,
+    "pattern": "solid",
+    "exclusion_type": "hard",
+    "_note": "Cultural heritage protection treated as a hard exclusion by default. Where heritage rules only limit height or require consent, override exclusion_type to review or soft. Uses fixed:heritage (dark plum) so it is not mistaken for the warm turbine colours."
+  },
+  "restriction_mining": {
+    "kind": "fill",
+    "color": "risk:medium",
+    "opacity": 0.3,
+    "outline_color": "auto",
+    "outline_width_mm": 0.4,
+    "pattern": "hatch",
+    "exclusion_type": "soft",
+    "_note": "Mining rights are usually a tenure or negotiation issue rather than a statutory exclusion, so they default to soft. Opacity is lower (0.3) than other soft buffers so large mining polygons do not dominate the figure."
+  },
+  "restriction_community": {
+    "kind": "fill",
+    "color": "risk:medium",
+    "opacity": 0.5,
+    "outline_color": "auto",
+    "outline_width_mm": 0.4,
+    "pattern": "hatch",
+    "exclusion_type": "soft"
+  },
+  "restriction_highway": {
+    "kind": "fill",
+    "color": "risk:medium",
+    "opacity": 0.5,
+    "outline_color": "auto",
+    "outline_width_mm": 0.4,
+    "pattern": "hatch",
+    "exclusion_type": "soft"
+  },
+  "restriction_transmission": {
+    "kind": "fill",
+    "color": "risk:medium",
+    "opacity": 0.5,
+    "outline_color": "auto",
+    "outline_width_mm": 0.4,
+    "pattern": "hatch",
+    "exclusion_type": "soft"
+  },
+  "restriction_aerodrome": {
+    "kind": "fill",
+    "color": "risk:high",
+    "opacity": 0.85,
+    "outline_color": "auto",
+    "outline_width_mm": 0.6,
+    "pattern": "hatch_cross",
+    "hatch_over_fill": true,
+    "exclusion_type": "hard",
+    "_note": "Absolute aviation exclusion only. Red plus a cross hatch drawn over a translucent base fill (`hatch_over_fill`): the base makes a large area read as one block, the cross hatch keeps a non-colour cue that separates it from other red/orange categories. Aviation constraints that require a permit or aeronautical study (obstacle limitation surfaces, safeguarding zones) are not absolute exclusions; use restriction_review for those."
+  },
+  "restriction_review": {
+    "kind": "fill",
+    "color": "risk:high",
+    "opacity": 0.55,
+    "outline_color": "auto",
+    "outline_width_mm": 0.45,
+    "pattern": "hatch",
+    "exclusion_type": "review",
+    "_note": "Restricted area that needs specific approval but is not an absolute exclusion (exclusion_type: review), for example aviation safeguarding surfaces. Keeps the high-risk red but uses a single hatch and lower opacity so it is visually weaker than hard exclusions. Which constraints belong here is a legal question for each jurisdiction, not a cartographic one."
+  },
+  "restriction_review_secondary": {
+    "kind": "fill",
+    "color": "risk:high",
+    "opacity": 0.35,
+    "outline_color": "auto",
+    "outline_width_mm": 0.4,
+    "pattern": "hatch",
+    "exclusion_type": "review",
+    "_note": "Second variant of restriction_review with lower opacity (0.35), so two adjacent review layers on the same map can be told apart. Same meaning; the legend lists them separately."
+  },
+  "project_boundary": {
+    "kind": "fill",
+    "color": "transparent",
+    "outline_color": "auto:own_infra",
+    "outline_width_mm": 0.7
+  },
+  "admin_boundary_local": {
+    "kind": "line",
+    "color": "fixed:boundary_admin",
+    "width_mm": 0.5,
+    "line_style": "dash"
+  },
+  "admin_boundary_province": {
+    "kind": "line",
+    "color": "fixed:boundary_admin",
+    "width_mm": 0.4,
+    "line_style": "dash"
+  },
+  "atlas_grid": {
+    "kind": "line",
+    "color": "fixed:boundary_admin",
+    "width_mm": 0.2,
+    "line_style": "dot"
+  },
+  "road_paved": {
+    "kind": "line",
+    "color": "fixed:road",
+    "width_mm": 0.5,
+    "opacity": 0.7,
+    "casing_color": "fixed:road_casing",
+    "casing_width_mm": 0.25,
+    "legend_casing_color": "fixed:road_casing_legend",
+    "_note": "Road lines use a casing (a pale halo drawn under the line) so they stay visible on any basemap instead of relying on a colour that happens to contrast with one particular basemap. `legend_casing_color` applies only to the legend swatch, whose near-white background needs a darker casing than the map. Layer opacity 0.7 and a narrow casing keep dense road networks in the background."
+  },
+  "road_unpaved": {
+    "kind": "line",
+    "color": "fixed:road",
+    "width_mm": 0.35,
+    "opacity": 0.7,
+    "line_style": "dash",
+    "casing_color": "fixed:road_casing",
+    "casing_width_mm": 0.22,
+    "legend_casing_color": "fixed:road_casing_legend"
+  },
+  "road_construction": {
+    "kind": "line",
+    "color": "fixed:road",
+    "width_mm": 0.35,
+    "opacity": 0.7,
+    "line_style": "dot",
+    "casing_color": "fixed:road_casing",
+    "casing_width_mm": 0.22,
+    "legend_casing_color": "fixed:road_casing_legend"
+  },
+  "building_confirmed": {
+    "kind": "fill",
+    "color": "auto:own_infra",
+    "opacity": 0.6,
+    "outline_color": "auto",
+    "outline_width_mm": 0.3,
+    "pattern": "solid"
+  },
+  "building_predicted": {
+    "kind": "fill",
+    "color": "transparent",
+    "outline_color": "auto:reference",
+    "outline_width_mm": 0.3,
+    "pattern": "solid",
+    "_note": "Outline only: the same filled = confirmed / hollow = predicted convention as building_confirmed."
+  },
+  "turbine_position": {
+    "kind": "point",
+    "shape": "circle",
+    "color": "auto:own_infra",
+    "size_mm": 3.0,
+    "outline_color": "#FFFFFF",
+    "outline_width_mm": 0.4
+  },
+  "met_mast": {
+    "kind": "point",
+    "shape": "diamond",
+    "color": "auto:own_infra",
+    "size_mm": 3.2,
+    "outline_color": "#FFFFFF",
+    "outline_width_mm": 0.4
+  },
+  "hoisting_pad": {
+    "kind": "fill",
+    "color": "auto:own_infra",
+    "opacity": 0.5,
+    "outline_color": "auto",
+    "outline_width_mm": 0.3,
+    "pattern": "solid"
+  },
+  "collector_line": {
+    "kind": "line",
+    "color": "auto:own_infra",
+    "width_mm": 0.5,
+    "line_style": "dash dot"
+  },
+  "export_line": {
+    "kind": "line",
+    "color": "auto:grid",
+    "width_mm": 0.6
+  },
+  "substation": {
+    "kind": "point",
+    "shape": "square",
+    "color": "auto:grid",
+    "size_mm": 3.0,
+    "outline_color": "#FFFFFF",
+    "outline_width_mm": 0.4
+  },
+  "grid_line": {
+    "kind": "line",
+    "color": "auto:grid",
+    "width_mm": 0.6,
+    "line_style": "dash dot"
+  },
+  "other_project": {
+    "kind": "point",
+    "shape": "triangle",
+    "color": "auto:reference",
+    "size_mm": 3.2,
+    "outline_color": "#FFFFFF",
+    "outline_width_mm": 0.4
+  },
+  "other_project_point": {
+    "kind": "point",
+    "shape": "circle",
+    "color": "auto:reference",
+    "size_mm": 3.0,
+    "outline_color": "#FFFFFF",
+    "outline_width_mm": 0.4,
+    "_note": "Point features of third-party projects. Circle instead of the triangle of other_project, so two kinds of third-party point in the same map are separated by shape while sharing the reference colour family."
+  },
+  "priority_zone": {
+    "kind": "fill",
+    "color": "auto",
+    "opacity": 0.65,
+    "outline_color": "auto",
+    "outline_width_mm": 0.4,
+    "pattern": "solid",
+    "_note": "Generic land-attribute or zoning polygon. Opacity 0.65 so the lighter qualitative colours remain visible over a muted basemap. Bare `auto` is order-based: if several zoning layers must keep consistent colours across maps, give each a fixed colour (for example via style_overrides: {color: ...})."
+  },
+  "restriction_military": {
+    "kind": "fill",
+    "color": "risk:high",
+    "opacity": 0.85,
+    "outline_color": "auto",
+    "outline_width_mm": 0.6,
+    "pattern": "solid",
+    "exclusion_type": "hard",
+    "_note": "Military zones treated as a hard exclusion by default; confirm locally."
+  },
+  "restriction_flood": {
+    "kind": "fill",
+    "color": "auto:grid",
+    "opacity": 0.5,
+    "outline_color": "auto",
+    "outline_width_mm": 0.4,
+    "pattern": "hatch",
+    "exclusion_type": "soft",
+    "_note": "Flood-prone areas: a probabilistic risk rather than a statutory exclusion, so soft. Blue from the grid family to suggest water while staying distinct from permanent water bodies (fixed:water)."
+  },
+  "other_project_boundary": {
+    "kind": "fill",
+    "color": "transparent",
+    "outline_color": "auto:reference",
+    "outline_width_mm": 0.7,
+    "_note": "Boundary of a third-party project: outline only, reference colour family, so it is not confused with restriction fills."
+  },
+  "alert_point": {
+    "kind": "point",
+    "shape": "star",
+    "color": "risk:high",
+    "size_mm": 4.0,
+    "outline_color": "#FFFFFF",
+    "outline_width_mm": 0.5,
+    "_note": "Individual features that need attention (for example a turbine with a confirmed conflict): a red star that cannot be confused with the regular turbine symbol."
+  },
+  "turbine_position_phase": {
+    "kind": "point_ringset",
+    "categorize_by": "phase",
+    "color": "transparent",
+    "ring_outer_size_mm": 6.5,
+    "ring_outer_width_mm": 0.65,
+    "ring_inner_color": "fixed:turbine_ring_inner",
+    "ring_inner_size_mm": 4.2,
+    "ring_inner_width_mm": 0.5,
+    "center_color": "fixed:turbine_center",
+    "center_size_mm": 1.8,
+    "categories": {
+      "1": {
+        "label": "Turbines, phase 1",
+        "ring_outer_color": "fixed:group_1"
+      },
+      "2": {
+        "label": "Turbines, phase 2",
+        "ring_outer_color": "fixed:group_2"
+      },
+      "3": {
+        "label": "Turbines, phase 3",
+        "ring_outer_color": "fixed:group_3"
+      }
+    },
+    "_note": "Ring-set turbine symbol with the outer ring coloured by a group field (`categorize_by`). The example categories expect values 1/2/3 in a field named `phase`; replace them per project with style_overrides, e.g. {categorize_by: stage, categories: {A: {label: ..., ring_outer_color: fixed:group_1}}}. `color: transparent` is set explicitly because point_ringset does not use it and a default `auto` would consume a colour from the global counter."
+  },
+  "turbine_position_ringset": {
+    "kind": "point_ringset",
+    "color": "transparent",
+    "ring_outer_color": "#E8871E",
+    "ring_outer_size_mm": 6.5,
+    "ring_outer_width_mm": 0.65,
+    "ring_inner_color": "fixed:turbine_ring_inner",
+    "ring_inner_size_mm": 4.2,
+    "ring_inner_width_mm": 0.5,
+    "center_color": "fixed:turbine_center",
+    "center_size_mm": 1.8,
+    "_note": "Ring-set turbine symbol (outer ring, inner ring, centre dot) without grouping. The outer ring is a literal colour rather than auto:own_infra so the same turbine layer keeps the same colour when it is reused by several layer keys; an auto:family reference would advance the family counter each time."
+  },
+  "boundary_by_phase": {
+    "kind": "fill",
+    "categorize_by": "phase",
+    "opacity": 0.28,
+    "outline_width_mm": 0.7,
+    "line_style": "dash",
+    "pattern": "solid",
+    "categories": {
+      "1": {
+        "label": "Phase 1 boundary",
+        "color": "fixed:group_1",
+        "outline_color": "fixed:group_1"
+      },
+      "2": {
+        "label": "Phase 2 boundary",
+        "color": "fixed:group_2",
+        "outline_color": "fixed:group_2"
+      },
+      "3": {
+        "label": "Phase 3 boundary",
+        "color": "fixed:group_3",
+        "outline_color": "fixed:group_3"
+      }
+    },
+    "_note": "Group boundary with dashed outline and light fill, coloured like the matching turbine_position_phase outer ring so readers can pair a boundary with its turbines without the legend. The example categories expect values 1/2/3 in a field named `phase`; replace them per project."
+  },
+  "boundary_overall": {
+    "kind": "fill",
+    "color": "transparent",
+    "outline_color": "#141414",
+    "outline_width_mm": 1.2,
+    "_note": "Overall site boundary: heavy dark outline, no fill, distinct from dashed group boundaries."
+  },
+  "developable_area": {
+    "kind": "fill",
+    "color": "risk:none",
+    "opacity": 0.55,
+    "outline_color": "#2E7D4F",
+    "outline_width_mm": 0.35,
+    "pattern": "solid",
+    "_note": "Output of derive_developable_area.py: site minus the union of true exclusion layers, drawn as a single flat fill (risk:none). Only subtract layers that are real exclusions; layers that merely require review should be overlaid with restriction_review instead of being subtracted. If the derivation used a particular convention (for example setbacks measured from building footprints), state it in the figure caption."
+  },
+  "exclusion_overlap": {
+    "kind": "fill",
+    "categorize_by": "n_constraints",
+    "outline_color": "transparent",
+    "opacity": 0.75,
+    "pattern": "solid",
+    "categories": {
+      "1": {
+        "label": "1 constraint",
+        "color": "#F2F0F7"
+      },
+      "2": {
+        "label": "2 constraints",
+        "color": "#DADAEB"
+      },
+      "3": {
+        "label": "3 constraints",
+        "color": "#BCBDDC"
+      },
+      "4": {
+        "label": "4 constraints",
+        "color": "#9E9AC8"
+      },
+      "5": {
+        "label": "5 constraints",
+        "color": "#756BB1"
+      },
+      "6": {
+        "label": "6 constraints",
+        "color": "#54278F"
+      }
+    },
+    "_note": "The `exclusion_union` layer of derive_developable_area.py, classed by how many constraints overlap at each place (a count-based simplification of the constraint-overlap analysis in Ryberg, Robinius & Stolten 2018, land eligibility in Europe). Colours are ColorBrewer 'Purples' (6 classes), a single-hue sequential scheme suited to counts and chosen to stay clear of the orange turbine colours."
+  },
+  "noise_contour": {
+    "kind": "line",
+    "color": "#37474F",
+    "width_mm": 0.45,
+    "casing_color": "#FFFFFF",
+    "casing_width_mm": 0.25,
+    "_note": "Generic noise contour lines (fields such as level_db). Lines only, no fill, with the value labelled on the line: set label_field: \"level_db || ' dB'\" and label_placement: curved in the layer config. Pick the criterion contour out of the same table with a `filter` and style it with noise_contour_limit."
+  },
+  "noise_contour_limit": {
+    "kind": "line",
+    "color": "fixed:status_exceed",
+    "width_mm": 0.9,
+    "casing_color": "#FFFFFF",
+    "casing_width_mm": 0.3,
+    "_note": "The contour that corresponds to the applicable criterion, selected from the noise_contour table with a `filter`. Coloured fixed:status_exceed."
+  },
+  "flicker_isoline": {
+    "kind": "line",
+    "color": "#424242",
+    "width_mm": 0.3,
+    "casing_color": "#FFFFFF",
+    "casing_width_mm": 0.15,
+    "_note": "Shadow-flicker isolines: uniform dark grey thin lines; the classes themselves are carried by flicker_band fills. The key threshold line uses flicker_isoline_key."
+  },
+  "flicker_isoline_key": {
+    "kind": "line",
+    "color": "#111111",
+    "width_mm": 0.9,
+    "casing_color": "#FFFFFF",
+    "casing_width_mm": 0.3,
+    "_note": "The key shadow-flicker threshold line of the applicable guidance (for example 30 h/year in the German LAI shadow-flicker guidance, 2020 update): heavy black line that stays visible over any band colour. The threshold is chosen with a `filter` in the layer config."
+  },
+  "receptor": {
+    "kind": "point",
+    "shape": "square",
+    "color": "#FFFFFF",
+    "size_mm": 2.2,
+    "outline_color": "#212121",
+    "outline_width_mm": 0.4,
+    "_note": "Noise / flicker receptors: white square with dark outline, distinguished from turbines (circles) by shape. Pair with label_field for receptor IDs; use receptor_exceed with a filter such as exceeds = 1 for receptors above a criterion."
+  },
+  "receptor_exceed": {
+    "kind": "point",
+    "shape": "square",
+    "color": "fixed:status_exceed",
+    "size_mm": 2.6,
+    "outline_color": "#FFFFFF",
+    "outline_width_mm": 0.4,
+    "_note": "Receptor above the criterion: red square (fixed:status_exceed) with white outline."
+  },
+  "flicker_band": {
+    "kind": "fill",
+    "outline_color": "transparent",
+    "opacity": 0.5,
+    "pattern": "solid",
+    "rules": [
+      {
+        "expr": "\"hours_min\" < 30",
+        "color": "#fbd724",
+        "label": "Below 30 h/year"
+      },
+      {
+        "expr": "\"hours_min\" >= 30 AND \"hours_min\" < 100 AND \"hours_max\" IS NULL",
+        "color": "#e56a5d",
+        "label": "30 h/year and above"
+      },
+      {
+        "expr": "\"hours_min\" >= 30 AND \"hours_min\" < 100 AND \"hours_max\" IS NOT NULL",
+        "color": "#e56a5d",
+        "label": "30–100 h/year"
+      },
+      {
+        "expr": "\"hours_min\" >= 100",
+        "color": "#8f0da4",
+        "label": "100 h/year and above"
+      }
+    ],
+    "_note": "Shadow-flicker hour bands as filled polygons (field hours_min). Multi-hue classes instead of lightness steps of one hue, by analogy with NatureScot (2017) para. 60, which advises against single-hue lightness steps for ZTV visibility bands. Colours are matplotlib 'plasma' sampled at 0.92 / 0.62 / 0.30: perceptually ordered and well separated in lightness, so classes remain readable in greyscale. Class limits are an example; override `rules` for the guidance in use. Draw one flicker case (e.g. astronomical maximum) per map. Band labels follow the data: when no level above 30 h/year is computed, the top band reads \"30 h/year and above\" rather than a fixed 30–100 range."
+  },
+  "point_generic": {
+    "kind": "point",
+    "shape": "circle",
+    "color": "auto",
+    "size_mm": 2.5,
+    "outline_color": "#FFFFFF",
+    "outline_width_mm": 0.3,
+    "_note": "Fallback for point layers without a `style`."
+  },
+  "line_generic": {
+    "kind": "line",
+    "color": "auto",
+    "width_mm": 0.5,
+    "_note": "Fallback for line layers without a `style`."
+  },
+  "polygon_generic": {
+    "kind": "fill",
+    "color": "auto",
+    "opacity": 0.5,
+    "outline_color": "auto",
+    "outline_width_mm": 0.3,
+    "pattern": "solid",
+    "_note": "Fallback for polygon layers without a `style`."
+  }
+}

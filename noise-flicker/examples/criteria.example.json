@@ -1,0 +1,28 @@
+{
+  "_note": "Example criteria registry. Keys under 'countries' are jurisdiction codes of your choosing. Every entry here is EXAMPLE ONLY - check your jurisdiction: national or local rules take precedence and may differ in metric, period definition, measurement position and penalties. Supported noise criterion types: absolute_limit, absolute_limit_with_background_adjustment, increment_over_background (see engine/criteria.py).",
+  "countries": {
+    "EXAMPLE": {
+      "country_name": "Example based on international guidance (example only - check your jurisdiction)",
+      "lat_range_deg": [-90, 90],
+      "noise": {
+        "criterion_type": "absolute_limit",
+        "enforceability": "international_guidance",
+        "metric": "LAeq,1h outdoors at residential receptor",
+        "limits_dB_A": {"day": 55, "night": 45},
+        "limit_logic": "example only - check your jurisdiction. IFC guideline values for residential, institutional and educational receptors (day 07:00-22:00, night 22:00-07:00). The IFC guideline also allows at most a 3 dB increase over background, which this example does not encode.",
+        "source": "IFC (2007), Environmental, Health, and Safety (EHS) General Guidelines, section 1.7 Noise, Table 1.7.1",
+        "_informative": "example only - check your jurisdiction. WHO (2018) Environmental Noise Guidelines for the European Region, section 3.4: wind turbine noise Lden below 45 dB (conditional recommendation); no night-time recommendation is made. This engine computes downwind LAeq, not Lden, so the WHO value is listed for information only.",
+        "verified_date": null
+      },
+      "shadow_flicker": {
+        "criterion_type": "annual_duration",
+        "enforceability": "international_guidance",
+        "limit_hours_per_year": 30,
+        "limit_minutes_per_day": 30,
+        "limit_logic": "example only - check your jurisdiction. Astronomical worst case at most 30 h/year and at most 30 min/day; where a shutdown system is installed, actual (real) shadow flicker is limited to 8 h/year.",
+        "source": "LAI (2020), Hinweise zur Ermittlung und Beurteilung der optischen Immissionen von Windkraftanlagen (WKA-Schattenwurfhinweise), Stand 23.01.2020",
+        "verified_date": null
+      }
+    }
+  }
+}

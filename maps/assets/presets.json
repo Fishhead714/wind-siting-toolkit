@@ -1,0 +1,39 @@
+{
+  "_comment": "Named output presets for figures placed in slides and reports. A preset only fills in size, physical_height_cm and decoration_layout when the view (or defaults) does not set them; explicit values in the YAML always win. Heights are the physical height the image will have on the page, which render_map.py uses to size text, symbols and decorations.",
+  "slide": {
+    "_desc": "16:9 slide (19.05 cm / 7.5 in high): picture area = 2/3 of the slide height, leaving room for title and footer",
+    "size": [
+      1600,
+      1400
+    ],
+    "physical_height_cm": 12.7,
+    "decoration_layout": "panel-auto"
+  },
+  "slide_tall": {
+    "_desc": "16:9 slide (19.05 cm / 7.5 in high): picture area = 4/5 of the slide height, for slides with a short title",
+    "size": [
+      1600,
+      1500
+    ],
+    "physical_height_cm": 15.2,
+    "decoration_layout": "panel-auto"
+  },
+  "report_full": {
+    "_desc": "Full-width A4 report figure (18 cm text width), 18 cm high",
+    "size": [
+      2000,
+      2000
+    ],
+    "physical_height_cm": 18,
+    "decoration_layout": "panel-bottom"
+  },
+  "report_half": {
+    "_desc": "Half-width report figure (about 8.5 cm wide, two-column layout), 10 cm high",
+    "size": [
+      1200,
+      1400
+    ],
+    "physical_height_cm": 10,
+    "decoration_layout": "panel-auto"
+  }
+}

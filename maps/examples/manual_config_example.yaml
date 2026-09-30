@@ -1,0 +1,170 @@
+# render_map.py configuration example (schema quick reference).
+#
+#   python3 scripts/render_map.py --config examples/manual_config_example.yaml --outdir output/
+#   python3 scripts/render_map.py --config my_maps.yaml --outdir output/ --only overview,constraints
+#
+# The Python interpreter must be able to `import qgis` (see README).
+#
+# Model: `layers` is a pool of layers defined once; each entry of `views` produces one PNG and
+# lists the pool keys it uses. In `views[*].layers` the FIRST key is drawn ON TOP (same order as
+# the QGIS layers panel), so basemaps belong at the end of the list.
+#
+# All relative file paths (source, raster, clip_to) are resolved against the directory of this
+# YAML file, not the current working directory. The paths below are placeholders; the demo in
+# demo/demo_maps.yaml is a complete, runnable configuration.
+
+crs: EPSG:32625          # map CRS; use a projected (metric) CRS so scale bars and distances are right.
+                         # If omitted, the CRS of the first vector layer is used.
+
+defaults:                # every key here can be overridden per view
+  size: [1800, 1200]     # output size in pixels
+  dpi: 150
+  margin: 0.15           # extent = union of extent_layers, enlarged by this fraction
+  background: "#FFFFFF"
+  legend: true
+  legend_title: false    # repeat the view title above the legend
+  title_on_image: true   # draw the view title on the image (space is reserved before rendering)
+  legend_position: null  # overlay layout only: null = pick the emptiest corner; or top-left / top-right /
+                         # bottom-left / bottom-right
+  scalebar: true
+  north: true            # north arrow
+  labels: auto           # on / off / auto (auto = each layer's labels_enabled)
+  extent_layers: [site_boundary]
+  physical_height_cm: 12.5    # physical height of the figure on the page; text and decorations are
+                              # sized from it, and a "1:N" scale ratio is printed next to the scale bar
+  decoration_layout: panel-bottom   # overlay | panel-bottom | panel-right | panel-auto (see docs/DESIGN.md).
+                              # For a series of figures in one document, fix one side instead of panel-auto.
+  panel_thickness_cm: 2.3     # optional: fixed panel thickness so a series of maps has identical map areas
+  legend_max_width_frac: 0.32 # legend width cap as a fraction of the canvas width; long labels wrap/ellipsize
+  source: "Example data sources"    # appended to the credit line after basemap attribution
+  source_label: "Data:"
+  date_label: "Date:"
+  scale_ratio_label: "1:{denom}"    # placeholders {denom} and {h_cm}
+  # preset: report_full       # expands to size / physical_height_cm / decoration_layout
+                              # (slide, slide_tall, report_full, report_half; see assets/presets.json).
+                              # Explicit keys always take precedence over a preset.
+  # basemap_gray: auto        # auto | true | false: turn colour vector basemaps (osm, opentopomap) grey
+                              # when the view contains filled polygons
+  # exclusion_group_labels: {hard: "Excluded", review: "Needs approval", soft: "Buffer (recommended)"}
+  # revision: "1.0"           # printed in the credit line; figure_id is set per view
+
+layers:
+  # `style` is preferably a category name from assets/report_style.json (shape and pattern fixed,
+  # colour from assets/theme.json). Alternatives: an inline dict {kind: point|line|fill|point_ringset, ...}
+  # or a path to a .qml file.
+  turbines:
+    source: data/layout.gpkg
+    layername: turbines          # needed when the GeoPackage has several tables
+    style: turbine_position      # circle with white outline, colour auto:own_infra
+    label: Wind turbine
+    label_field: turbine_id      # labels need a field (or an expression)
+    labels_enabled: false        # large-extent maps get cluttered; enable on detail maps
+    # label_obstacle: true       # other layers' labels avoid these symbols (works even with labels off)
+    # label_offsets: {12: [6, 4]}            # pin a label by feature id: [dx_mm, dy_mm]
+    # label_callout: {style: line, color: "#333333", width_mm: 0.3}
+    # label_box: {fill: "#FFFFFF", outline: "#333333"}
+
+  site_boundary:
+    source: data/boundary.gpkg
+    layername: site_boundary
+    style: project_boundary
+    label: Site boundary
+
+  admin_boundary:
+    source: data/admin.gpkg
+    layername: districts
+    style: admin_boundary_local  # a line category on polygon data is drawn as an outline
+    label: Sub-district boundary
+    label_field: name
+    force_labels: true           # always drawn, even when the view sets labels: off
+    label_top_k_by_area: 3       # only label the 3 features with the largest overlap with the view
+
+  dwelling_setback:
+    source: data/constraints.gpkg
+    layername: dwelling_setback
+    style: restriction_community         # soft buffer (hatched)
+    style_overrides: {exclusion_type: hard}   # project-level override of category fields
+    label: Dwelling setback
+
+  aviation:
+    source: data/constraints.gpkg
+    layername: aviation_safeguarding
+    style: restriction_review            # needs approval, not an absolute exclusion
+    label: Aviation safeguarding zone
+
+  grid_line:
+    source: data/grid.gpkg
+    layername: transmission
+    style: grid_line
+    label: Transmission line
+    filter: "voltage_kv >= 110"          # QGIS expression selecting a subset
+
+  # Several colours from ONE table: use a categorized style instead of several filtered layers.
+  land_classes:
+    source: data/landuse.gpkg
+    layername: zoning
+    style:
+      kind: fill
+      categorize_by: zone_class
+      opacity: 0.6
+      outline_color: transparent
+      categories:
+        A: {label: "Zone A", color: "fixed:group_1"}
+        B: {label: "Zone B", color: "fixed:group_2"}
+        C: {label: "Zone C", color: "fixed:group_3"}
+    label: Zoning
+    # Rule-based alternative for compound conditions:
+    #   style: {kind: fill, rules: [{expr: "\"area_ha\" < 10", color: "#fbd724", label: "Small"}, ...]}
+
+  wind_speed:
+    raster: data/wind_speed_100m.tif     # single-band numeric raster, pseudo-colour
+    clip_to: data/country.gpkg           # optional: cells outside this polygon become transparent
+    clip_to_where: "ISO_A3 = 'XYZ'"      # needed when clip_to holds several features (OGR SQL WHERE)
+    style:
+      min: 4.0
+      max: 9.0
+      colors: "ramp:wind_speed"          # named ramp from theme.json (wind_speed, wind_speed_dark,
+                                         # elevation) or a list of two or more colours
+      opacity: 0.85
+    label: Mean wind speed (m/s)         # a raster with a label gets a colour bar
+
+  basemap:
+    basemap: esri_gray                   # osm | opentopomap | esri_gray | esri_satellite
+    # treatment: false                   # esri_satellite is desaturated and darkened by default
+    # Attribution for the basemap is added to the credit line automatically.
+
+views:
+  - out: overview
+    title: Layout and site boundary
+    layers: [turbines, site_boundary, admin_boundary, basemap]
+
+  - out: constraints
+    title: Constraints
+    figure_id: "2.1"
+    layers: [turbines, site_boundary, aviation, dwelling_setback, basemap]
+    highlight:                           # rings around selected features
+      - layer_key: turbines
+        id_field: turbine_id
+        ids: ["T03", "T07"]
+        label: Positions to review
+
+  - out: grid
+    title: Grid connection
+    extent_layers: [turbines]
+    extent_pad_km: 10                    # grow the extent by this many km
+    symbol_scale: 1.8                    # enlarge all symbols on this view only
+    labels: off
+    layers: [turbines, grid_line, basemap]
+    pull_in:                             # if the layer has nothing in view, extend the extent to the
+      - {layer_key: grid_line, cap_km: 20}   # nearest feature within cap_km and mark it
+
+  - out: wind_resource
+    title: Wind resource
+    preset: report_half
+    decoration_layout: panel-auto        # choose right or bottom panel from the shape of the content
+    # locator: {layer: admin_boundary, width_frac: 0.22}   # optional locator inset
+    layers: [wind_speed, site_boundary]
+
+  - out: zoning
+    title: Zoning
+    layers: [land_classes, site_boundary, basemap]

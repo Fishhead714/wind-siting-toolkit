@@ -1,0 +1,114 @@
+{
+  "_note": "TEST FIXTURE ONLY. Fictional jurisdictions with arbitrary numbers that exercise every criterion shape the engine supports. Not guidance for any real place.",
+  "countries": {
+    "XI": {
+      "country_name": "Fixture: increment over background",
+      "lat_range_deg": [
+        -90,
+        90
+      ],
+      "noise": {
+        "criterion_type": "increment_over_background",
+        "enforceability": "fixture",
+        "allowance_dB": {
+          "day": 8,
+          "night": 5
+        },
+        "rule_text": {
+          "day": "background + 8 dB(A) (fixture)",
+          "night": "background + 5 dB(A) (fixture)"
+        },
+        "background_LA90": {
+          "status": "ASSUMED",
+          "assumed_range_dB_A": [
+            25,
+            35
+          ],
+          "assumption_basis": "fixture assumption"
+        },
+        "measurement_metric": {
+          "_note": "fixture"
+        },
+        "_open_question": "fixture open question",
+        "_note": "generic 'background + N dB' shape (cf. ETSU-R-97, NZS 6808); fixture numbers are arbitrary"
+      },
+      "shadow_flicker": {
+        "criterion_type": "annual_duration",
+        "enforceability": "guidance",
+        "limit_hours_per_year": 30,
+        "limit_minutes_per_day": 30,
+        "limit_logic": "fixture guidance values"
+      }
+    },
+    "XA": {
+      "country_name": "Fixture: flat absolute limit",
+      "lat_range_deg": [
+        -90,
+        90
+      ],
+      "noise": {
+        "criterion_type": "absolute_limit",
+        "enforceability": "fixture",
+        "metric": "LAeq at receptor",
+        "limits_dB_A": {
+          "day": 45,
+          "night": 38
+        }
+      },
+      "shadow_flicker": {
+        "criterion_type": "study_obligation_no_threshold",
+        "enforceability": "fixture",
+        "limit_hours_per_year": null,
+        "limit_minutes_per_day": null,
+        "requirement": "fixture: study required, no numeric threshold"
+      }
+    },
+    "XB": {
+      "country_name": "Fixture: zoned absolute limit with background adjustment",
+      "lat_range_deg": [
+        -90,
+        90
+      ],
+      "noise": {
+        "criterion_type": "absolute_limit_with_background_adjustment",
+        "enforceability": "fixture",
+        "limits_dB_A": {
+          "residential": {
+            "day": 50,
+            "night": 45
+          },
+          "industrial": {
+            "day": 70,
+            "night": 65
+          }
+        },
+        "binding": "residential",
+        "background_adjustment": {
+          "rule": "fixture adjustment rule",
+          "margin_dB": 6,
+          "above_table_value": 4,
+          "within_margin_below": 2,
+          "below_by_more_than_margin": 0,
+          "source": "fixture",
+          "_boundary_caveat": "fixture boundary caveat"
+        },
+        "_note": "generic zoned absolute limit with a background-dependent adjustment; fixture numbers are arbitrary"
+      },
+      "shadow_flicker": {
+        "status": "NOT_RESEARCHED",
+        "_note": "fixture gap"
+      }
+    },
+    "XN": {
+      "country_name": "Fixture: nothing researched",
+      "noise": {
+        "status": "NOT_RESEARCHED",
+        "_note": "fixture gap"
+      },
+      "shadow_flicker": {
+        "status": "NOT_RESEARCHED",
+        "_note": "fixture gap"
+      }
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "_note": "Parameters of an openly documented reference turbine, used only by tests/selftest.py and demo/run_demo.sh. The engine itself has no default turbine; every parameter is a required input.",
+  "name": "IEA-3.4-130-RWT (IEA Wind TCP Task 37 land-based reference wind turbine)",
+  "source": "Bortolotti, P. et al. (2019), IEA Wind TCP Task 37: Systems Engineering in Wind Energy - WP2.1 Reference Wind Turbines, NREL/TP-5000-73492, Table 2 p.19, https://www.nrel.gov/docs/fy19osti/73492.pdf",
+  "rated_power_mw": 3.37,
+  "rotor_diameter_m": 130.0,
+  "hub_height_m": 110.0,
+  "lwa_dBA": 106.3,
+  "lwa_basis": "estimated from rated power via van den Berg et al. 2008 regression L_W = 10.0*log10(P_kW) + 71.0 dB(A) (10-m wind 8 m/s); NOT a published property of this turbine; mild extrapolation above ~3 MW data range",
+  "lwa_source": "van den Berg, F., Pedersen, E., Bouma, J., Bakker, R. (2008), WINDFARMperception: Visual and acoustic impact of wind turbine farms on residents, Final Report, section 3.2 p.9, https://pure.rug.nl/ws/files/14620621/WFp-final.pdf",
+  "blade_chord_m": 4.3,
+  "blade_chord_basis": "maximum blade chord (4.298 m at 25.8 % span) from outer_shape.chord in IEA-3.4-130-RWT.yaml; using the maximum chord gives the largest (conservative) flicker calculation distance",
+  "blade_chord_source": "https://github.com/IEAWindTask37/IEA-3.4-130-RWT/blob/aacff396f46b35f7104d83be095f859684013405/yaml/IEA-3.4-130-RWT.yaml (Apache-2.0); value quoted, file not redistributed",
+  "spectrum_file": "spectrum.example.json",
+  "spectrum": "mw_class_mean"
+}

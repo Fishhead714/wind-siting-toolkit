@@ -1,0 +1,103 @@
+# Renders the output of noise-flicker/demo/run_demo.sh (written to demo/out/ by run_all.sh).
+# SYNTHETIC data only. Relative paths are resolved against the directory of this file.
+# The 45 dB(A) line is the example night-time value of examples/criteria.example.json
+# (IFC General EHS Guidelines 2007); it is shown as an example, not as a requirement.
+crs: EPSG:32625
+
+defaults:
+  size: [1800, 1350]
+  dpi: 150
+  margin: 0.08
+  background: "#FFFFFF"
+  legend: true
+  scalebar: true
+  north: true
+  labels: auto
+  physical_height_cm: 13
+  decoration_layout: panel-right
+  extent_layers: [boundary, buildings]
+  source: "Synthetic demo data (not a real site); noise-flicker"
+  source_label: "Data:"
+  date_label: "Date:"
+  scale_ratio_label: "1:{denom}"
+
+layers:
+  boundary:
+    source: out/demo_site.gpkg
+    layername: boundary
+    style: project_boundary
+    label: Site boundary
+  buildings:
+    source: out/demo_site.gpkg
+    layername: buildings
+    style: {kind: fill, color: "#BDBDBD", outline_color: "#616161", outline_width_mm: 0.15}
+    label: Buildings
+  wtg:
+    source: out/demo_site.gpkg
+    layername: wtg
+    style: turbine_position_ringset
+    label: Wind turbine
+    label_field: wtg_id
+    labels_enabled: true
+    label_obstacle: true
+  rec_ok:
+    source: out/demo_contours.gpkg
+    layername: receptor
+    style: receptor
+    filter: "exceeds = 0"
+    label: "Receptor (below example criteria)"
+  rec_exceed:
+    source: out/demo_contours.gpkg
+    layername: receptor
+    style: receptor_exceed
+    filter: "exceeds = 1"
+    label: "Receptor (at or above an example criterion)"
+  noise_lines:
+    source: out/demo_contours.gpkg
+    layername: noise_contour
+    style: noise_contour
+    filter: "level_db <> 45"
+    label: "Noise contour, dB(A)"
+    label_field: "level_db || ' dB'"
+    label_placement: curved
+    labels_enabled: true
+  noise_limit:
+    source: out/demo_contours.gpkg
+    layername: noise_contour
+    style: noise_contour_limit
+    filter: "level_db = 45"
+    label: "45 dB(A) contour (example night-time value)"
+    label_field: "level_db || ' dB'"
+    label_placement: curved
+    labels_enabled: true
+  flicker_band:
+    source: out/demo_contours.gpkg
+    layername: flicker_band
+    style: flicker_band
+    filter: "\"case\" = 'astronomical_max'"
+    label: Shadow flicker, astronomical maximum
+  flicker_lines:
+    source: out/demo_contours.gpkg
+    layername: flicker_isoline
+    style: flicker_isoline
+    filter: "\"case\" = 'astronomical_max' AND hours_per_year <> 30"
+    label: Flicker isoline (8 h/year)
+  flicker_key:
+    source: out/demo_contours.gpkg
+    layername: flicker_isoline
+    style: flicker_isoline_key
+    filter: "\"case\" = 'astronomical_max' AND hours_per_year = 30"
+    label: "30 h/year line (example value)"
+    label_field: "hours_per_year || ' h'"
+    label_placement: curved
+    labels_enabled: true
+
+views:
+  - out: pipeline_noise
+    title: "Noise contours, night (synthetic demo)"
+    extent_layers: [noise_lines, noise_limit, buildings]
+    layers: [wtg, noise_limit, noise_lines, rec_exceed, rec_ok, buildings, boundary]
+  - out: pipeline_flicker
+    title: "Shadow flicker, worst case (synthetic demo)"
+    extent_layers: [flicker_band, buildings]
+    layers: [wtg, flicker_key, flicker_lines, rec_exceed, rec_ok, flicker_band, buildings, boundary]

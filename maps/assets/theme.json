@@ -1,0 +1,64 @@
+{
+  "_comment": "Colour and font theme for render_map.py. Only two namespaces are read: `report` (low-saturation semantic colours for figures in reports and slides) and `font`. Colours are #RRGGBB or #RRGGBBAA hex strings. Style categories in report_style.json refer to these values as `auto`, `auto:<family>`, `fixed:<key>`, `risk:<level>` or `ramp:<name>`; see resolve_color() and resolve_ramp() in render_map.py.",
+
+  "report": {
+    "_comment": "Semantic palette. `families` are small hue groups that a category cycles through with `auto:<family>` (own infrastructure = warm oranges, grid = blues, reference/third-party = muted violet-greys), so a given kind of feature keeps the same hue family on every map. Colours inside a family are handed out in the order layers appear in the config, which makes output deterministic for a given config.",
+    "families": {
+      "own_infra": ["#E8871E", "#B5651D", "#C99A00", "#D9822B"],
+      "grid": ["#2A6F97", "#1D3557", "#468FAF", "#3D5A80"],
+      "reference": ["#7D6B91", "#6B7280", "#9A8C98", "#5C6784"]
+    },
+    "qualitative_comment": "Fallback palette for bare `auto`: Paul Tol 'muted' qualitative scheme (10 colours), designed to stay distinguishable under common colour-vision deficiencies and deliberately free of pure red and mid blue, so it does not compete with the risk colours. Source: Paul Tol, Colour Schemes, SRON/EPS/TN/09-002 (values as published in the tol_colors package). The counter wraps after 10 layers; beyond that, assign fixed colours explicitly.",
+    "qualitative": [
+      "#CC6677", "#332288", "#DDCC77", "#117733", "#88CCEE",
+      "#882255", "#44AA99", "#999933", "#AA4499", "#DDDDDD"
+    ],
+    "sequential_comment": "Single-hue sequential steps for ordered classes. sequential_blue = ColorBrewer 'Blues' (8-class scheme, steps 2/4/6/7/8); sequential_orange = ColorBrewer 'Oranges' (5-class). ColorBrewer by Cynthia Brewer, Mark Harrower and The Pennsylvania State University (Apache-2.0).",
+    "sequential_blue": ["#DEEBF7", "#9ECAE1", "#4292C6", "#2171B5", "#084594"],
+    "sequential_orange": ["#FEEDDE", "#FDBE85", "#FD8D3C", "#E6550D", "#A63603"],
+    "ramps_comment": "Named continuous ramps for single-band rasters, referenced from a config as colors: \"ramp:<name>\". Following Crameri, Shephard & Heron (2020), ramps are perceptually uniform, monotonic in lightness and do not contain the page background colour. wind_speed = viridis sampled at 7 equal steps (0 to 1). wind_speed_dark = viridis from 0.15 to 1 for dark backgrounds, where the darkest viridis end would merge with the canvas. elevation = Scientific colour maps 'bilbao' (Crameri, v1.8) reversed and trimmed before its white end (positions 0.88 to 0), light beige to dark red-brown, so low ground is not confused with a white canvas; green is avoided at the low end because users tend to read green as vegetation (Patterson & Jenny 2013).",
+    "ramps": {
+      "wind_speed": ["#440154", "#443983", "#31688e", "#21918c", "#35b779", "#90d743", "#fde725"],
+      "elevation": ["#d0cfcb", "#bdb590", "#ae9362", "#a6765c", "#9e5955", "#7e2f35", "#4c0001"],
+      "wind_speed_dark": ["#463480", "#365d8d", "#27808e", "#1fa287", "#4cc26c", "#a0da39", "#fde725"]
+    },
+    "risk_comment": "Severity colours used by restriction categories (`risk:<level>`). Red/orange neighbours are not safe for every reader on their own, so restriction categories also differ in hatch pattern and opacity (redundant encoding).",
+    "risk": {
+      "high": "#C00000",
+      "medium": "#D87600",
+      "low": "#FBAE40",
+      "none": "#6FCF97"
+    },
+    "fixed_comment": "Fixed colours for categories whose hue must not depend on layer order. Bare `auto` hands out colours by a global counter in config order, so two layers that describe the same kind of thing can receive different colours, and a fixed colour chosen by hand can collide with a colour the counter is still handing out; semantic families that must stay distinct therefore get fixed values here. road is a desaturated dark grey-brown kept apart from the warm own_infra hues. road_casing is a pale warm halo drawn under road lines so they stay visible on any basemap (off-white rather than white, to avoid confusion with clouds and bright roofs); road_casing_legend is a darker variant used only for legend swatches, which sit on a near-white legend background. heritage is a dark plum chosen to stay clear of the orange, green, red and blue groups. protection_1..protection_4 plus protected_area form one green ramp (Material Design Green 900/800/600/400/300) for protected-land classes of decreasing strength; protection_1 is the strongest. The ordering is an example; map it to the classes of the local regulation. turbine_ring_inner / turbine_center are the inner ring and centre dot of the ring-set turbine symbol (Paul Tol 'bright' yellow and blue). group_1..group_3 are Tol 'bright' blue / green / purple for up to three turbine or boundary groups; the Tol red and yellow are skipped to avoid confusion with risk colours and the turbine inner ring. status_ok / status_warn / status_exceed are Tol 'bright' green / yellow / red (Paul Tol, Colour Schemes, SRON/EPS/TN/09-002) for compliance states such as receptors or contours at or above a criterion; they are intentionally separate from `risk`, which grades land restrictions.",
+    "fixed": {
+      "protected_area": "#2E7D32",
+      "water": "#1E6091",
+      "road": "#5A5348",
+      "road_casing": "#F2EEDD",
+      "road_casing_legend": "#D8C99C",
+      "boundary_admin": "#6B7280",
+      "heritage": "#7B4173",
+      "protection_1": "#1B5E20",
+      "protection_2": "#43A047",
+      "protection_3": "#66BB6A",
+      "protection_4": "#81C784",
+      "turbine_ring_inner": "#CCBB44",
+      "turbine_center": "#4477AA",
+      "group_1": "#4477AA",
+      "group_2": "#228833",
+      "group_3": "#AA3377",
+      "status_ok": "#228833",
+      "status_warn": "#CCBB44",
+      "status_exceed": "#EE6677"
+    },
+    "highlight_ring_comment": "RGB colours for highlight rings drawn around selected features (view-level `highlight`), cycled per highlight group.",
+    "highlight_ring": [[0, 220, 255], [255, 90, 190], [255, 140, 0]]
+  },
+
+  "font": {
+    "_comment": "Candidate font families; Qt falls back per character to the first family that has the glyph. For CJK or Thai labels, install e.g. Noto Sans CJK / Noto Sans Thai and add them to this list.",
+    "families": ["Noto Sans", "DejaVu Sans"],
+    "label_size_pt": 8,
+    "halo_mm": 1.2
+  }
+}

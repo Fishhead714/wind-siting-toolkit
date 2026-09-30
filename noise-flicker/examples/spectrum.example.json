@@ -1,0 +1,8 @@
+{
+  "_note": "Octave-band shape: A-weighted band level minus A-weighted total L_WA, dB. Only the shape matters; band levels are renormalised so that their energy sum equals the turbine's L_WA. Replace with the manufacturer's spectrum for the turbine and operating mode being assessed.",
+  "spectra": {
+    "mw_class_mean": {"63": -17.3, "125": -10.7, "250": -6.8, "500": -5.6,
+                      "1000": -6.8, "2000": -8.5, "4000": -12.8, "8000": -23.1,
+                      "_source": "derived - arithmetic mean of 10 normalised octave spectra of >=2 MW turbines listed in WINDFARMperception Final Report (van den Berg et al., 2008) Appendix B, appendix page 8 (PDF page 84), renormalised to sum 0 dB; cross-checked visually against Møller & Pedersen (2011), J. Acoust. Soc. Am. 129(6), Fig. 14 (agreement about 1 dB). Generic class average, not a specific turbine."}
+  }
+}

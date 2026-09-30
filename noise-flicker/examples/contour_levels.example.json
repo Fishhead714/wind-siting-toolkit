@@ -1,0 +1,7 @@
+{
+  "_note": "Example contour levels for contours.py --levels-file. The criterion limit from the criteria registry is always added. Example only - choose levels that match the rules of your jurisdiction.",
+  "noise_dB": [35, 40, 45],
+  "_noise_note": "45 dB(A) = IFC (2007) General EHS Guidelines Table 1.7.1 night-time residential value; 35 and 40 are intermediate display levels in 5 dB steps.",
+  "flicker_h": [8, 30],
+  "_flicker_note": "LAI (2020) WKA-Schattenwurfhinweise: 30 h/year astronomical worst case; 8 h/year actual shadow flicker where a shutdown system is installed."
+}

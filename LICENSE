@@ -1,0 +1,7 @@
+This repository contains components under different licences.
+
+- noise-flicker/: Apache-2.0 (full text in noise-flicker/LICENSE)
+- maps/: GPL-3.0-or-later (full text in maps/LICENSE)
+
+Each directory is licensed separately; no file is covered by more than one of these licences.
+Third-party credits are in each directory's THIRD_PARTY_NOTICES.md.
