@@ -42,6 +42,15 @@ documented in each directory (for example flat terrain and downwind propagation)
 substitute for a site-specific assessment by a qualified consultant or for the procedure required
 by your permitting authority.
 
+## Background
+
+These tools started as scripts for real onshore wind siting studies: checking noise and flicker at
+houses, drawing constraint maps for review meetings, testing layouts, estimating how much of a cable
+route could follow existing roads. Each one was rebuilt as a generic engine: no project data, no
+site-specific rules, example defaults labelled as such. Most of the code was written with AI agents
+and then reviewed, tested on synthetic data, and read line by line before release.
+The author is a wind-energy engineer by trade; see the [profile](https://github.com/Fishhead714).
+
 ## Licence
 
 Each directory is licensed separately: `maps/` is GPL-3.0-or-later and every other directory is Apache-2.0
