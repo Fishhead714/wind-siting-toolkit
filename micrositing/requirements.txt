@@ -1,0 +1,6 @@
+# Lower bounds only.
+numpy>=1.24
+shapely>=2.0
+geopandas>=0.14
+pyproj>=3.4
+# tests: pip install pytest>=7

@@ -1,0 +1,2 @@
+# Runtime: none (standard library only).
+# Tests: pip install "pytest>=7"

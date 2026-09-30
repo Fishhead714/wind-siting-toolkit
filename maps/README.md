@@ -56,5 +56,7 @@ installation and is not distributed here.
 
 ## License
 
+Copyright 2026 Fishhead714.
+
 GNU General Public License v3.0 or later (see `LICENSE`). The renderer imports PyQGIS (QGIS is
 GPL-2.0-or-later; PyQt5 is GPL-3.0). Colour sources are credited in `THIRD_PARTY_NOTICES.md`.

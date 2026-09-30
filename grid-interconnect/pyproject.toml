@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "wind-grid-interconnect"
+version = "0.1.0"
+description = "Screening-level collector / grid-interconnection route tools: road reuse, cost-surface least-cost paths, water avoidance, off-road-multiplier sensitivity"
+readme = "README.md"
+license = { text = "Apache-2.0" }
+requires-python = ">=3.10"
+dependencies = [
+    "numpy>=1.24",
+    "scipy>=1.10",
+    "shapely>=2.0",
+    "geopandas>=0.14",
+    "networkx>=3.0",
+    "scikit-image>=0.21",
+    "pyproj>=3.4",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=7"]
+
+[tool.setuptools]
+packages = ["wind_grid_interconnect"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

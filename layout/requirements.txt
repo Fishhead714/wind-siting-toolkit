@@ -1,0 +1,11 @@
+# Lower bounds only. TOPFARM requires Python >=3.11,<3.14.
+numpy>=1.24
+scipy>=1.10
+pandas>=2.0
+shapely>=2.0
+geopandas>=0.14
+rasterio>=1.3
+pyproj>=3.4
+py_wake>=2.5
+topfarm>=2.4
+# tests: pip install pytest>=7

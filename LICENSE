@@ -1,7 +1,14 @@
 This repository contains components under different licences.
 
+Copyright 2026 Fishhead714
+
 - noise-flicker/: Apache-2.0 (full text in noise-flicker/LICENSE)
 - maps/: GPL-3.0-or-later (full text in maps/LICENSE)
+- layout/: Apache-2.0 (full text in layout/LICENSE)
+- micrositing/: Apache-2.0 (full text in micrositing/LICENSE)
+- grid-interconnect/: Apache-2.0 (full text in grid-interconnect/LICENSE)
+- turbine-suitability/: Apache-2.0 (full text in turbine-suitability/LICENSE)
+- energy-uncertainty/: Apache-2.0 (full text in energy-uncertainty/LICENSE)
 
 Each directory is licensed separately; no file is covered by more than one of these licences.
 Third-party credits are in each directory's THIRD_PARTY_NOTICES.md.
